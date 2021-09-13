@@ -1,7 +1,9 @@
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision.models as models
 
-__all__ = ['lenet']
+__all__ = ['lenet', 'resnet18']
 
 
 class LeNet(nn.Module):
@@ -26,6 +28,21 @@ class LeNet(nn.Module):
         x = self.fc2(x)
         return x
 
+class Resnet18(nn.Module):
+    def __init__(self, num_classes=10, **kwargs):
+        super().__init__()
+        resnet = models.resnet18(pretrained=False, num_classes=10)
+        resnet.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        resnet.maxpool = torch.nn.Identity()
+        self.model = resnet
+
+    def forward(self, x):
+        return F.log_softmax(self.model(x), dim=1)
+
+
 
 def lenet(num_classes, **kwargs):
     return LeNet(num_classes, **kwargs)
+
+def resnet18(num_classes, **kwargs):
+    return Resnet18(num_classes, **kwargs)
