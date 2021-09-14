@@ -42,7 +42,7 @@ class Resnet18(nn.Module):
 class Resnet18CIFAR(nn.Module):
     def __init__(self, num_classes=10, **kwargs):
         super().__init__()
-        res_mod = models.resnet34(pretrained=False)
+        res_mod = models.resnet18(pretrained=False)
         num_ftrs = res_mod.fc.in_features
         res_mod.fc = nn.Linear(num_ftrs, num_classes)
         self.model = res_mod
