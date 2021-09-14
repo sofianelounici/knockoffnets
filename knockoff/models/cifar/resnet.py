@@ -17,9 +17,11 @@ https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py
 '''
 import torch.nn as nn
 import math
+import torchvision.models as models
 
 
-__all__ = ['resnet', 'resnet18', 'resnet34', 'resnet50']
+
+__all__ = ['resnet', 'resnetcifar', 'resnet18', 'resnet34', 'resnet50']
 
 
 def conv3x3(in_planes, out_planes, stride=1):
@@ -166,6 +168,18 @@ class ResNet(nn.Module):
 
         return x
 
+class Resnet18CIFAR(nn.Module):
+    def __init__(self, num_classes=10, **kwargs):
+        super().__init__()
+        res_mod = models.resnet18(pretrained=False)
+        num_ftrs = res_mod.fc.in_features
+        res_mod.fc = nn.Linear(num_ftrs, num_classes)
+        self.model = res_mod
+
+    def forward(self, x):
+        return F.log_softmax(self.model(x), dim=1)
+
+
 
 def resnet(**kwargs):
     """
@@ -177,6 +191,8 @@ def resnet(**kwargs):
 def resnet18(num_classes=10):
     return resnet(depth=20, num_classes=num_classes)
 
+def resnetcifar(num_classes=10, **kwargs):
+    return Resnet18CIFAR(num_classes, **kwargs)
 
 def resnet34(num_classes=1000):
     return resnet(depth=32, num_classes=num_classes)
