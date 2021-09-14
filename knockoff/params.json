@@ -1,6 +1,6 @@
 {
     "dataset": "FashionMNIST",
-    "model_arch": "resnet19",
+    "model_arch": "resnet18",
     "out_path": "models/victim/resnet-wm",
     "device_id": 2,
     "batch_size": 64,
