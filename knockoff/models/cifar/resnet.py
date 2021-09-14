@@ -174,7 +174,7 @@ def resnet(**kwargs):
     return ResNet(**kwargs)
 
 
-def resnet18(num_classes=1000):
+def resnet18(num_classes=10):
     return resnet(depth=20, num_classes=num_classes)
 
 

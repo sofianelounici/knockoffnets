@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
 
-__all__ = ['lenet', 'resnet18', 'resnet18cifar']
+__all__ = ['lenet', 'resnet18']
 
 
 class LeNet(nn.Module):
@@ -39,25 +39,9 @@ class Resnet18(nn.Module):
     def forward(self, x):
         return F.log_softmax(self.model(x), dim=1)
 
-class Resnet18CIFAR(nn.Module):
-    def __init__(self, num_classes=10, **kwargs):
-        super().__init__()
-        res_mod = models.resnet18(pretrained=False)
-        num_ftrs = res_mod.fc.in_features
-        res_mod.fc = nn.Linear(num_ftrs, num_classes)
-        self.model = res_mod
-
-    def forward(self, x):
-        return F.log_softmax(self.model(x), dim=1)
-
-
-
 
 def lenet(num_classes, **kwargs):
     return LeNet(num_classes, **kwargs)
 
 def resnet18(num_classes, **kwargs):
     return Resnet18(num_classes, **kwargs)
-
-def resnet18cifar(num_classes, **kwargs):
-    return Resnet18CIFAR(num_classes, **kwargs)
