@@ -16,6 +16,7 @@ https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py
 (c) YANG, Wei
 '''
 import torch.nn as nn
+import torch
 import math
 import torchvision.models as models
 import torch.nn.functional as F
@@ -172,10 +173,12 @@ class ResNet(nn.Module):
 class Resnet18CIFAR(nn.Module):
     def __init__(self, num_classes=10, **kwargs):
         super().__init__()
-        res_mod = models.resnet18(pretrained=False)
-        num_ftrs = res_mod.fc.in_features
-        res_mod.fc = nn.Linear(num_ftrs, num_classes)
-        self.model = res_mod
+        resnet = models.resnet18(pretrained=False, num_classes=10)
+        resnet.conv1 = torch.nn.Conv2d(
+            3, 64, kernel_size=3, stride=1, padding=1, bias=False
+        )
+        resnet.maxpool = torch.nn.Identity()
+        self.model = resnet
 
     def forward(self, x):
         return F.log_softmax(self.model(x), dim=1)
